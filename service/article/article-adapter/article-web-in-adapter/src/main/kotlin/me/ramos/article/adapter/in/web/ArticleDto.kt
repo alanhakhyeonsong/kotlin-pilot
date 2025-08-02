@@ -59,10 +59,8 @@ data class ArticleResponse(
     val content: String,
     val boardId: Long,
     val writerId: Long,
-    val viewCount: Long,
-    val likeCount: Long,
     val createdAt: LocalDateTime?,
-    val updatedAt: LocalDateTime?
+    val modifiedAt: LocalDateTime?
 ) {
     companion object {
         fun from(article: Article): ArticleResponse {
@@ -72,10 +70,8 @@ data class ArticleResponse(
                 content = article.content,
                 boardId = article.boardId,
                 writerId = article.writerId,
-                viewCount = article.viewCount,
-                likeCount = article.likeCount,
                 createdAt = article.createdAt,
-                updatedAt = article.updatedAt
+                modifiedAt = article.modifiedAt
             )
         }
     }
