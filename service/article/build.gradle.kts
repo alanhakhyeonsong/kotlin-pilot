@@ -1,19 +1,14 @@
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.spring")
-//    kotlin("plugin.jpa")
-    id("io.spring.dependency-management")
+    id("spring-boot-application-conventions")
 }
 
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.boot:spring-boot-dependencies:3.5.4")
-    }
-}
+description = "Article service main application - Spring Boot executable"
 
 dependencies {
-    implementation(project(":core"))
+    val implementation by configurations
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation(project(":service:article:article-domain"))
+    implementation(project(":service:article:article-application"))
+    implementation(project(":service:article:article-adapter:article-jpa-out-adapter"))
+    implementation(project(":service:article:article-adapter:article-web-in-adapter"))
 }
