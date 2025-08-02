@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: comment-application
+
+server:
+  port: 9092
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,caches
