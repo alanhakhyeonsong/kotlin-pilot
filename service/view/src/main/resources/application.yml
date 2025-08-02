@@ -3,7 +3,7 @@ spring:
     name: view-application
 
 server:
-  port: 9095
+  port: 8085
 
 management:
   endpoints:

@@ -3,7 +3,7 @@ spring:
     name: like-application
 
 server:
-  port: 9094
+  port: 8084
 
 management:
   endpoints:
