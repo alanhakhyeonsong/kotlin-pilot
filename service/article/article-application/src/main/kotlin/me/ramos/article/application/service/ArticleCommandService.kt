@@ -44,8 +44,4 @@ class ArticleCommandService(
         }
         articlePort.deleteArticle(id)
     }
-
-    override fun increaseViewCount(id: Long): Article {
-        TODO("Not yet implemented")
-    }
 }

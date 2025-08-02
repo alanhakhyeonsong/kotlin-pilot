@@ -39,8 +39,8 @@ class ArticleController(
             ?: return ResponseEntity.notFound().build()
 
         // 조회시 view count 증가
-        val updatedArticle = articleUseCase.increaseViewCount(id)
-        return ResponseEntity.ok(ArticleResponse.from(updatedArticle))
+//        val updatedArticle = articleUseCase.increaseViewCount(id)
+        return ResponseEntity.ok(ArticleResponse.from(article))
     }
 
     @GetMapping

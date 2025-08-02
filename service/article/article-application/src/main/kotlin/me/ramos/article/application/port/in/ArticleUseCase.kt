@@ -33,7 +33,6 @@ interface ArticleCommandUseCase {
     fun createArticle(command: CreateArticleCommand): Article
     fun updateArticle(command: UpdateArticleCommand): Article
     fun deleteArticle(id: Long)
-    fun increaseViewCount(id: Long): Article
 }
 
 /**
