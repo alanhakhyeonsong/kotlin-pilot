@@ -11,4 +11,5 @@ dependencies {
     implementation(project(":service:article:article-application"))
     implementation(project(":service:article:article-adapter:article-jpa-out-adapter"))
     implementation(project(":service:article:article-adapter:article-web-in-adapter"))
+    compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
 }
