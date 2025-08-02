@@ -10,10 +10,10 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
     testImplementation("io.mockk:mockk:1.13.8")
-    testImplementation("org.instancio:instancio-kotlin:3.3.0")
+    testImplementation("org.instancio:instancio-junit:5.5.0")
 
     // TestFixtures 의존성
-    testFixturesImplementation("org.instancio:instancio-kotlin:3.3.0")
+    testFixturesImplementation("org.instancio:instancio-junit:5.5.0")
 }
 
 // Kotest 설정
