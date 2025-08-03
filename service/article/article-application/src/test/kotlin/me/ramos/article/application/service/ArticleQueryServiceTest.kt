@@ -1,6 +1,7 @@
 package me.ramos.article.application.service
 
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
@@ -55,36 +56,93 @@ class ArticleQueryServiceTest : BehaviorSpec({
         }
     }
 
-    Given("전체 게시글 조회 시") {
-        When("게시글이 존재할 때") {
+    Given("무한 스크롤 게시글 조회 시") {
+        When("첫 번째 페이지를 요청할 때 (lastArticleId = null)") {
             val articleQueryPort = mockk<ArticleQueryPort>()
             val articleQueryService = ArticleQueryService(articleQueryPort)
+            val boardId = 1L
+            val pageSize = 10L
+            val lastArticleId: Long? = null
             val expectedArticles = ArticleApplicationFixtures.getArticleList()
 
-            every { articleQueryPort.loadAllArticles() } returns expectedArticles
+            every { articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId) } returns expectedArticles
 
-            val result = articleQueryService.getAllArticles()
+            val result = articleQueryService.getAllArticles(boardId, pageSize, lastArticleId)
 
-            Then("모든 게시글이 반환된다") {
+            Then("첫 번째 페이지의 게시글들이 반환된다") {
                 result shouldBe expectedArticles
                 result.size shouldBe 3
 
-                verify(exactly = 1) { articleQueryPort.loadAllArticles() }
+                verify(exactly = 1) { articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId) }
             }
         }
 
-        When("게시글이 존재하지 않을 때") {
+        When("두 번째 페이지를 요청할 때 (lastArticleId가 있음)") {
             val articleQueryPort = mockk<ArticleQueryPort>()
             val articleQueryService = ArticleQueryService(articleQueryPort)
+            val boardId = 1L
+            val pageSize = 10L
+            val lastArticleId = 10L
+            val expectedArticles = listOf(
+                ArticleDomainFixtures.getArticleWithId(9L),
+                ArticleDomainFixtures.getArticleWithId(8L),
+                ArticleDomainFixtures.getArticleWithId(7L)
+            )
 
-            every { articleQueryPort.loadAllArticles() } returns emptyList()
+            every { articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId) } returns expectedArticles
 
-            val result = articleQueryService.getAllArticles()
+            val result = articleQueryService.getAllArticles(boardId, pageSize, lastArticleId)
+
+            Then("lastArticleId 이후의 게시글들이 반환된다") {
+                result shouldBe expectedArticles
+                result.size shouldBe 3
+                // 무한 스크롤에서는 ID가 내림차순으로 정렬되어야 함
+                result.forEach { article ->
+                    article.id!! shouldBeLessThan lastArticleId
+                }
+
+                verify(exactly = 1) { articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId) }
+            }
+        }
+
+        When("마지막 페이지를 요청할 때") {
+            val articleQueryPort = mockk<ArticleQueryPort>()
+            val articleQueryService = ArticleQueryService(articleQueryPort)
+            val boardId = 1L
+            val pageSize = 10L
+            val lastArticleId = 3L
+
+            every { articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId) } returns emptyList()
+
+            val result = articleQueryService.getAllArticles(boardId, pageSize, lastArticleId)
 
             Then("빈 리스트가 반환된다") {
                 result shouldBe emptyList()
 
-                verify(exactly = 1) { articleQueryPort.loadAllArticles() }
+                verify(exactly = 1) { articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId) }
+            }
+        }
+
+        When("페이지 크기보다 적은 게시글이 있을 때") {
+            val articleQueryPort = mockk<ArticleQueryPort>()
+            val articleQueryService = ArticleQueryService(articleQueryPort)
+            val boardId = 1L
+            val pageSize = 10L
+            val lastArticleId: Long? = null
+            val expectedArticles = listOf(
+                ArticleDomainFixtures.getArticleWithId(5L),
+                ArticleDomainFixtures.getArticleWithId(4L)
+            )
+
+            every { articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId) } returns expectedArticles
+
+            val result = articleQueryService.getAllArticles(boardId, pageSize, lastArticleId)
+
+            Then("실제 존재하는 게시글만 반환된다") {
+                result shouldBe expectedArticles
+                result.size shouldBe 2
+
+                verify(exactly = 1) { articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId) }
             }
         }
     }
