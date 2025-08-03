@@ -11,13 +11,13 @@ rootDir
 │       ├── config
 │       └── model
 └── service # 서브 모듈
-		└── {domain} # 도메인별 모듈 (ex. article, comment, ...)
-		    ├── {domain}-domain # 도메인 패키지
-		    ├── {domain}-application # 어플리케이션 패키지(port, service)
-		    └── {domain}-adapter # 어댑터 패키지
-		        ├── {domain}-jpa-out-adapter 
-		        └── {domain}-web-in-adapter
-		    └── Application.kt # Spring Boot 애플리케이션 실행 모듈
+    └── {domain} # 도메인별 모듈 (ex. article, comment, ...)
+        ├── {domain}-domain # 도메인 패키지
+        ├── {domain}-application # 어플리케이션 패키지(port, service)
+        └── {domain}-adapter # 어댑터 패키지
+            ├── {domain}-jpa-out-adapter 
+            └── {domain}-web-in-adapter
+        └── Application.kt # Spring Boot 애플리케이션 실행 모듈
 ```
 
 ## Tech Stack
