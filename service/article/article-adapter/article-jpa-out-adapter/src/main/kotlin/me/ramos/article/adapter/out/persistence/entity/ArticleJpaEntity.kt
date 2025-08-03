@@ -2,6 +2,7 @@ package me.ramos.article.adapter.out.persistence.entity
 
 import jakarta.persistence.*
 import me.ramos.article.domain.model.Article
+import me.ramos.core.jpa.model.BaseEntity
 import java.time.LocalDateTime
 
 /**
@@ -19,6 +20,7 @@ import java.time.LocalDateTime
 )
 class ArticleJpaEntity(
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_id")
     var articleId: Long? = null,
 
@@ -33,13 +35,7 @@ class ArticleJpaEntity(
 
     @Column(name = "writer_id", nullable = false)
     var writerId: Long,
-
-    @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
-
-    @Column(name = "modified_at", nullable = false)
-    var modifiedAt: LocalDateTime = LocalDateTime.now()
-) {
+) : BaseEntity() {
 
     fun toDomain(): Article {
         return Article(
@@ -53,14 +49,6 @@ class ArticleJpaEntity(
         )
     }
 
-    fun updateFromDomain(article: Article) {
-        this.title = article.title
-        this.content = article.content
-        this.boardId = article.boardId
-        this.writerId = article.writerId
-        this.modifiedAt = LocalDateTime.now()
-    }
-
     companion object {
         fun fromDomain(article: Article): ArticleJpaEntity {
             return ArticleJpaEntity(
@@ -68,9 +56,7 @@ class ArticleJpaEntity(
                 title = article.title,
                 content = article.content,
                 boardId = article.boardId,
-                writerId = article.writerId,
-                createdAt = article.createdAt ?: LocalDateTime.now(),
-                modifiedAt = article.modifiedAt ?: LocalDateTime.now()
+                writerId = article.writerId
             )
         }
     }

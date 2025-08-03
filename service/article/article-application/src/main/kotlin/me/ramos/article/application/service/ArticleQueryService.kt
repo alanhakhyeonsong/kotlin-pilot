@@ -1,7 +1,7 @@
 package me.ramos.article.application.service
 
 import me.ramos.article.application.port.`in`.ArticleQueryUseCase
-import me.ramos.article.application.port.out.ArticlePort
+import me.ramos.article.application.port.out.ArticleQueryPort
 import me.ramos.article.domain.model.Article
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,22 +15,22 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class ArticleQueryService(
-    private val articlePort: ArticlePort
+    private val articleQueryPort: ArticleQueryPort
 ) : ArticleQueryUseCase {
 
     override fun getArticle(id: Long): Article? {
-        return articlePort.loadArticle(id)
+        return articleQueryPort.loadArticle(id)
     }
 
     override fun getAllArticles(): List<Article> {
-        return articlePort.loadAllArticles()
+        return articleQueryPort.loadAllArticles()
     }
 
     override fun getArticlesByBoard(boardId: Long): List<Article> {
-        return articlePort.loadArticlesByBoard(boardId)
+        return articleQueryPort.loadArticlesByBoard(boardId)
     }
 
     override fun getArticlesByWriter(writerId: Long): List<Article> {
-        return articlePort.loadArticlesByWriter(writerId)
+        return articleQueryPort.loadArticlesByWriter(writerId)
     }
 }

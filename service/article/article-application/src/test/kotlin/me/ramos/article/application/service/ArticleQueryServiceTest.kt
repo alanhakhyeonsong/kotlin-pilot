@@ -7,7 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import me.ramos.article.application.fixture.ArticleApplicationFixtures
-import me.ramos.article.application.port.out.ArticlePort
+import me.ramos.article.application.port.out.ArticleQueryPort
 import me.ramos.article.domain.fixture.ArticleDomainFixtures
 
 /**
@@ -19,12 +19,12 @@ class ArticleQueryServiceTest : BehaviorSpec({
 
     Given("게시글 조회 서비스가") {
         When("존재하는 게시글 ID로 조회할 때") {
-            val articlePort = mockk<ArticlePort>()
-            val articleQueryService = ArticleQueryService(articlePort)
+            val articleQueryPort = mockk<ArticleQueryPort>()
+            val articleQueryService = ArticleQueryService(articleQueryPort)
             val articleId = 1L
             val expectedArticle = ArticleDomainFixtures.getArticleWithId(articleId)
 
-            every { articlePort.loadArticle(articleId) } returns expectedArticle
+            every { articleQueryPort.loadArticle(articleId) } returns expectedArticle
 
             val result = articleQueryService.getArticle(articleId)
 
@@ -34,34 +34,34 @@ class ArticleQueryServiceTest : BehaviorSpec({
                 result?.title shouldBe expectedArticle.title
                 result?.content shouldBe expectedArticle.content
 
-                verify(exactly = 1) { articlePort.loadArticle(articleId) }
+                verify(exactly = 1) { articleQueryPort.loadArticle(articleId) }
             }
         }
 
         When("존재하지 않는 게시글 ID로 조회할 때") {
-            val articlePort = mockk<ArticlePort>()
-            val articleQueryService = ArticleQueryService(articlePort)
+            val articleQueryPort = mockk<ArticleQueryPort>()
+            val articleQueryService = ArticleQueryService(articleQueryPort)
             val nonExistentId = 999L
 
-            every { articlePort.loadArticle(nonExistentId) } returns null
+            every { articleQueryPort.loadArticle(nonExistentId) } returns null
 
             val result = articleQueryService.getArticle(nonExistentId)
 
             Then("null이 반환된다") {
                 result shouldBe null
 
-                verify(exactly = 1) { articlePort.loadArticle(nonExistentId) }
+                verify(exactly = 1) { articleQueryPort.loadArticle(nonExistentId) }
             }
         }
     }
 
     Given("전체 게시글 조회 시") {
         When("게시글이 존재할 때") {
-            val articlePort = mockk<ArticlePort>()
-            val articleQueryService = ArticleQueryService(articlePort)
+            val articleQueryPort = mockk<ArticleQueryPort>()
+            val articleQueryService = ArticleQueryService(articleQueryPort)
             val expectedArticles = ArticleApplicationFixtures.getArticleList()
 
-            every { articlePort.loadAllArticles() } returns expectedArticles
+            every { articleQueryPort.loadAllArticles() } returns expectedArticles
 
             val result = articleQueryService.getAllArticles()
 
@@ -69,34 +69,34 @@ class ArticleQueryServiceTest : BehaviorSpec({
                 result shouldBe expectedArticles
                 result.size shouldBe 3
 
-                verify(exactly = 1) { articlePort.loadAllArticles() }
+                verify(exactly = 1) { articleQueryPort.loadAllArticles() }
             }
         }
 
         When("게시글이 존재하지 않을 때") {
-            val articlePort = mockk<ArticlePort>()
-            val articleQueryService = ArticleQueryService(articlePort)
+            val articleQueryPort = mockk<ArticleQueryPort>()
+            val articleQueryService = ArticleQueryService(articleQueryPort)
 
-            every { articlePort.loadAllArticles() } returns emptyList()
+            every { articleQueryPort.loadAllArticles() } returns emptyList()
 
             val result = articleQueryService.getAllArticles()
 
             Then("빈 리스트가 반환된다") {
                 result shouldBe emptyList()
 
-                verify(exactly = 1) { articlePort.loadAllArticles() }
+                verify(exactly = 1) { articleQueryPort.loadAllArticles() }
             }
         }
     }
 
     Given("게시판별 게시글 조회 시") {
         When("해당 게시판에 게시글이 존재할 때") {
-            val articlePort = mockk<ArticlePort>()
-            val articleQueryService = ArticleQueryService(articlePort)
+            val articleQueryPort = mockk<ArticleQueryPort>()
+            val articleQueryService = ArticleQueryService(articleQueryPort)
             val boardId = 1L
             val expectedArticles = ArticleApplicationFixtures.getArticleListWithBoardId(boardId)
 
-            every { articlePort.loadArticlesByBoard(boardId) } returns expectedArticles
+            every { articleQueryPort.loadArticlesByBoard(boardId) } returns expectedArticles
 
             val result = articleQueryService.getArticlesByBoard(boardId)
 
@@ -105,22 +105,22 @@ class ArticleQueryServiceTest : BehaviorSpec({
                 result.size shouldBe 3
                 result.forEach { it.boardId shouldBe boardId }
 
-                verify(exactly = 1) { articlePort.loadArticlesByBoard(boardId) }
+                verify(exactly = 1) { articleQueryPort.loadArticlesByBoard(boardId) }
             }
         }
     }
 
     Given("작성자별 게시글 조회 시") {
         When("해당 작성자의 게시글이 존재할 때") {
-            val articlePort = mockk<ArticlePort>()
-            val articleQueryService = ArticleQueryService(articlePort)
+            val articleQueryPort = mockk<ArticleQueryPort>()
+            val articleQueryService = ArticleQueryService(articleQueryPort)
             val writerId = 1L
             val expectedArticles = listOf(
                 ArticleDomainFixtures.getArticleWithWriterId(writerId),
                 ArticleDomainFixtures.getArticleWithWriterId(writerId)
             )
 
-            every { articlePort.loadArticlesByWriter(writerId) } returns expectedArticles
+            every { articleQueryPort.loadArticlesByWriter(writerId) } returns expectedArticles
 
             val result = articleQueryService.getArticlesByWriter(writerId)
 
@@ -129,7 +129,7 @@ class ArticleQueryServiceTest : BehaviorSpec({
                 result.size shouldBe 2
                 result.forEach { it.writerId shouldBe writerId }
 
-                verify(exactly = 1) { articlePort.loadArticlesByWriter(writerId) }
+                verify(exactly = 1) { articleQueryPort.loadArticlesByWriter(writerId) }
             }
         }
     }

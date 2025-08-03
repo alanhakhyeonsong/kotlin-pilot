@@ -1,7 +1,8 @@
 package me.ramos.article.adapter.`in`.web
 
 import jakarta.validation.Valid
-import me.ramos.article.application.port.`in`.ArticleUseCase
+import me.ramos.article.application.port.`in`.ArticleCommandUseCase
+import me.ramos.article.application.port.`in`.ArticleQueryUseCase
 import me.ramos.article.application.port.`in`.CreateArticleCommand
 import me.ramos.article.application.port.`in`.UpdateArticleCommand
 import org.springframework.http.HttpStatus
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/articles")
 class ArticleController(
-    private val articleUseCase: ArticleUseCase
+    private val articleQueryUseCase: ArticleQueryUseCase,
+    private val articleCommandUseCase: ArticleCommandUseCase,
 ) {
 
     @PostMapping
@@ -28,36 +30,35 @@ class ArticleController(
             boardId = request.boardId,
             writerId = request.writerId
         )
-        val article = articleUseCase.createArticle(command)
+        val article = articleCommandUseCase.createArticle(command)
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(ArticleResponse.from(article))
     }
 
     @GetMapping("/{id}")
     fun getArticle(@PathVariable id: Long): ResponseEntity<ArticleResponse> {
-        val article = articleUseCase.getArticle(id)
+        val article = articleQueryUseCase.getArticle(id)
             ?: return ResponseEntity.notFound().build()
 
-        // 조회시 view count 증가
-//        val updatedArticle = articleUseCase.increaseViewCount(id)
+        // TODO : 조회시 view count 증가
         return ResponseEntity.ok(ArticleResponse.from(article))
     }
 
     @GetMapping
     fun getAllArticles(): ResponseEntity<List<ArticleResponse>> {
-        val articles = articleUseCase.getAllArticles()
+        val articles = articleQueryUseCase.getAllArticles()
         return ResponseEntity.ok(articles.map { ArticleResponse.from(it) })
     }
 
     @GetMapping("/board/{boardId}")
     fun getArticlesByBoard(@PathVariable boardId: Long): ResponseEntity<List<ArticleResponse>> {
-        val articles = articleUseCase.getArticlesByBoard(boardId)
+        val articles = articleQueryUseCase.getArticlesByBoard(boardId)
         return ResponseEntity.ok(articles.map { ArticleResponse.from(it) })
     }
 
     @GetMapping("/writer/{writerId}")
     fun getArticlesByWriter(@PathVariable writerId: Long): ResponseEntity<List<ArticleResponse>> {
-        val articles = articleUseCase.getArticlesByWriter(writerId)
+        val articles = articleQueryUseCase.getArticlesByWriter(writerId)
         return ResponseEntity.ok(articles.map { ArticleResponse.from(it) })
     }
 
@@ -71,13 +72,13 @@ class ArticleController(
             title = request.title,
             content = request.content
         )
-        val article = articleUseCase.updateArticle(command)
+        val article = articleCommandUseCase.updateArticle(command)
         return ResponseEntity.ok(ArticleResponse.from(article))
     }
 
     @DeleteMapping("/{id}")
     fun deleteArticle(@PathVariable id: Long): ResponseEntity<Void> {
-        articleUseCase.deleteArticle(id)
+        articleCommandUseCase.deleteArticle(id)
         return ResponseEntity.noContent().build()
     }
 }

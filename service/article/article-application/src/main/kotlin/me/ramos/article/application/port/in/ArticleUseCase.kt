@@ -2,13 +2,6 @@ package me.ramos.article.application.port.`in`
 
 import me.ramos.article.domain.model.Article
 
-/**
- * 게시글 유스케이스 인터페이스 (통합)
- * Query와 Command UseCase를 통합한 편의성 인터페이스입니다.
- *
- * @author HakHyeon Song
- */
-interface ArticleUseCase : ArticleQueryUseCase, ArticleCommandUseCase
 
 /**
  * 게시글 Query UseCase 인터페이스
