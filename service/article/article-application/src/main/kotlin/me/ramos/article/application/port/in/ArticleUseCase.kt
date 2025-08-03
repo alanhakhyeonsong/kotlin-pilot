@@ -10,9 +10,39 @@ import me.ramos.article.domain.model.Article
  * @author HakHyeon Song
  */
 interface ArticleQueryUseCase {
+
+    /**
+     * 게시글 ID로 게시글을 조회합니다.
+     *
+     * @param id 게시글 ID
+     * @return 조회된 게시글, 없으면 null
+     */
     fun getArticle(id: Long): Article?
+
+    /**
+     * 게시판 ID와 페이지 크기를 기준으로 게시글을 목록 조회합니다.
+     *
+     * @param boardId 게시판 ID
+     * @param pageSize 페이지 크기
+     * @param lastArticleId 마지막으로 조회된 게시글 ID (무한 스크롤 용)
+     * @return 조회된 게시글 목록
+     */
     fun getAllArticles(boardId: Long, pageSize: Long, lastArticleId: Long?): List<Article>
+
+    /**
+     * 게시판 ID로 게시글 목록을 조회합니다.
+     *
+     * @param boardId 게시판 ID
+     * @return 해당 게시판의 게시글 목록
+     */
     fun getArticlesByBoard(boardId: Long): List<Article>
+
+    /**
+     * 작성자 ID로 게시글 목록을 조회합니다.
+     *
+     * @param writerId 작성자 ID
+     * @return 해당 작성자의 게시글 목록
+     */
     fun getArticlesByWriter(writerId: Long): List<Article>
 }
 
@@ -23,8 +53,28 @@ interface ArticleQueryUseCase {
  * @author HakHyeon Song
  */
 interface ArticleCommandUseCase {
+
+    /**
+     * 게시글을 생성합니다.
+     *
+     * @param command 게시글 생성 명령
+     * @return 생성된 게시글
+     */
     fun createArticle(command: CreateArticleCommand): Article
+
+    /**
+     * 게시글을 수정합니다.
+     *
+     * @param command 게시글 수정 명령
+     * @return 수정된 게시글
+     */
     fun updateArticle(command: UpdateArticleCommand): Article
+
+    /**
+     * 게시글을 삭제합니다.
+     *
+     * @param id 삭제할 게시글 ID
+     */
     fun deleteArticle(id: Long)
 }
 

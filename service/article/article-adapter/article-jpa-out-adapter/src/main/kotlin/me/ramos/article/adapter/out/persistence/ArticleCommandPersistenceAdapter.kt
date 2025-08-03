@@ -17,7 +17,6 @@ class ArticleCommandPersistenceAdapter(
     private val articleJpaRepository: ArticleJpaRepository
 ) : ArticleCommandPort {
 
-    // Command operations
     override fun saveArticle(article: Article): Article {
         return articleJpaRepository.save(ArticleJpaEntity.fromDomain(article))
             .toDomain()
