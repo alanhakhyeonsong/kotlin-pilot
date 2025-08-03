@@ -3,7 +3,8 @@ package me.ramos.article.application.service
 import me.ramos.article.application.port.`in`.ArticleCommandUseCase
 import me.ramos.article.application.port.`in`.CreateArticleCommand
 import me.ramos.article.application.port.`in`.UpdateArticleCommand
-import me.ramos.article.application.port.out.ArticlePort
+import me.ramos.article.application.port.out.ArticleCommandPort
+import me.ramos.article.application.port.out.ArticleQueryPort
 import me.ramos.article.domain.model.Article
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class ArticleCommandService(
-    private val articlePort: ArticlePort
+    private val articleQueryPort: ArticleQueryPort,
+    private val articleCommandPort: ArticleCommandPort
 ) : ArticleCommandUseCase {
 
     override fun createArticle(command: CreateArticleCommand): Article {
@@ -27,21 +29,21 @@ class ArticleCommandService(
             boardId = command.boardId,
             writerId = command.writerId
         )
-        return articlePort.saveArticle(article)
+        return articleCommandPort.saveArticle(article)
     }
 
     override fun updateArticle(command: UpdateArticleCommand): Article {
-        val existingArticle = articlePort.loadArticle(command.id)
+        val existingArticle = articleQueryPort.loadArticle(command.id)
             ?: throw IllegalArgumentException("Article not found with id: ${command.id}")
 
         val updatedArticle = existingArticle.update(command.title, command.content)
-        return articlePort.saveArticle(updatedArticle)
+        return articleCommandPort.saveArticle(updatedArticle)
     }
 
     override fun deleteArticle(id: Long) {
-        if (!articlePort.existsArticle(id)) {
+        if (!articleQueryPort.existsArticle(id)) {
             throw IllegalArgumentException("Article not found with id: $id")
         }
-        articlePort.deleteArticle(id)
+        articleCommandPort.deleteArticle(id)
     }
 }
