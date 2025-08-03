@@ -9,7 +9,7 @@ import me.ramos.article.domain.model.Article
  */
 interface ArticleQueryPort {
     fun loadArticle(id: Long): Article?
-    fun loadAllArticles(): List<Article>
+    fun loadAllArticles(boardId: Long, pageSize: Long, lastArticleId: Long?): List<Article>
     fun loadArticlesByBoard(boardId: Long): List<Article>
     fun loadArticlesByWriter(writerId: Long): List<Article>
     fun existsArticle(id: Long): Boolean

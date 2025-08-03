@@ -45,8 +45,12 @@ class ArticleController(
     }
 
     @GetMapping
-    fun getAllArticles(): ResponseEntity<List<ArticleResponse>> {
-        val articles = articleQueryUseCase.getAllArticles()
+    fun getAllArticles(
+        @RequestParam("boardId") boardId: Long,
+        @RequestParam("pageSize") pageSize: Long,
+        @RequestParam("lastArticleId") lastArticleId: Long? = null
+    ): ResponseEntity<List<ArticleResponse>> {
+        val articles = articleQueryUseCase.getAllArticles(boardId, pageSize, lastArticleId)
         return ResponseEntity.ok(articles.map { ArticleResponse.from(it) })
     }
 

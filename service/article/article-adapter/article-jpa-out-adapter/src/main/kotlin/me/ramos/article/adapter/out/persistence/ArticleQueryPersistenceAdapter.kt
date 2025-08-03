@@ -23,9 +23,12 @@ class ArticleQueryPersistenceAdapter(
             ?.toDomain()
     }
 
-    override fun loadAllArticles(): List<Article> {
-        return articleJpaRepository.findAllByOrderByArticleIdDesc()
-            .map { it.toDomain() }
+    override fun loadAllArticles(boardId: Long, pageSize: Long, lastArticleId: Long?): List<Article> {
+        return (lastArticleId
+            ?.let { articleJpaRepository.findAllInfiniteScroll(boardId, pageSize, it) }
+            ?: articleJpaRepository.findAllInfiniteScroll(boardId, pageSize)
+                )
+            .map(ArticleJpaEntity::toDomain)
     }
 
     override fun loadArticlesByBoard(boardId: Long): List<Article> {

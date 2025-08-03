@@ -22,8 +22,8 @@ class ArticleQueryService(
         return articleQueryPort.loadArticle(id)
     }
 
-    override fun getAllArticles(): List<Article> {
-        return articleQueryPort.loadAllArticles()
+    override fun getAllArticles(boardId: Long, pageSize: Long, lastArticleId: Long?): List<Article> {
+        return articleQueryPort.loadAllArticles(boardId, pageSize, lastArticleId)
     }
 
     override fun getArticlesByBoard(boardId: Long): List<Article> {

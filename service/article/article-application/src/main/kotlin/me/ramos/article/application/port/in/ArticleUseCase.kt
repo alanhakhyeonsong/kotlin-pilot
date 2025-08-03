@@ -11,7 +11,7 @@ import me.ramos.article.domain.model.Article
  */
 interface ArticleQueryUseCase {
     fun getArticle(id: Long): Article?
-    fun getAllArticles(): List<Article>
+    fun getAllArticles(boardId: Long, pageSize: Long, lastArticleId: Long?): List<Article>
     fun getArticlesByBoard(boardId: Long): List<Article>
     fun getArticlesByWriter(writerId: Long): List<Article>
 }
